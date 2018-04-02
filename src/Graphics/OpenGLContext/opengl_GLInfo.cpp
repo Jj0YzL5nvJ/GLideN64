@@ -40,6 +40,10 @@ void GLInfo::init() {
 		renderer = Renderer::Intel;
 	else if (strstr((const char*)strRenderer, "PowerVR") != nullptr)
 		renderer = Renderer::PowerVR;
+	else if (strstr((const char*)strRenderer, "AMD") != nullptr)
+		renderer = Renderer::AMD;
+	else if (strstr((const char*)strRenderer, "Radeon") != nullptr)
+		renderer = Renderer::AMD;
 	LOG(LOG_VERBOSE, "OpenGL renderer: %s\n", strRenderer);
 
 	int numericVersion = majorVersion * 10 + minorVersion;
@@ -61,8 +65,10 @@ void GLInfo::init() {
 	if (isGLES2)
 		config.generalEmulation.enableFragmentDepthWrite = 0;
 
-	bufferStorage = (!isGLESX && (numericVersion >= 44)) || Utils::isExtensionSupported(*this, "GL_ARB_buffer_storage") ||
-			Utils::isExtensionSupported(*this, "GL_EXT_buffer_storage");
+	if (renderer != Renderer::AMD) {
+		bufferStorage = (!isGLESX && (numericVersion >= 44)) || Utils::isExtensionSupported(*this, "GL_ARB_buffer_storage") ||
+				Utils::isExtensionSupported(*this, "GL_EXT_buffer_storage");
+	}
 
 	texStorage = (isGLESX && (numericVersion >= 30)) || (!isGLESX && numericVersion >= 42) ||
 			Utils::isExtensionSupported(*this, "GL_ARB_texture_storage");
