@@ -24,8 +24,8 @@ jobs:
           curl -L -O https://github.com/gonetz/GLideN64/releases/download/qt_build/qt-5_7_1-x86-msvc2017-static.7z
           7z x qt-5_7_1-x86-msvc2017-static.7z
           set "QTDIR_x86=%CD%\qt-5_7_1-x86-msvc2017-static"
-          md pkg
-          set "BUILDROUTE=%CD%\pkg"
+          md binaries
+          set "BUILDROUTE=%CD%\binaries"
           cd GLideN64
           goto begin
           :build
@@ -45,8 +45,11 @@ jobs:
           call :build "4974f64a569b1a74ec451727ae16dacdf97d100b"
           echo.
           if exist "%BUILDROUTE%\errors.txt" type "%BUILDROUTE%\errors.txt"
+          echo.
+          md pkg
+          xcopy /e "%BUILDROUTE%" pkg
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: GLideN64_Backtrace_2020
-          path: ../pkg/*
+          path: pkg/*
